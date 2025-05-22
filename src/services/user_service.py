@@ -25,7 +25,9 @@ class UserService:
             raise ValueError("Username already exists")
         password_hash = self.hash_password(password)
         user = User(username, password_hash)
-        self.user_repo.add_user(user)
+        success = self.user_repo.add_user(user)
+        if not success:
+            raise Exception("No se pudo registrar el usuario. Intenta más tarde.")
         return True
 
     def login(self, username: str, password: str):

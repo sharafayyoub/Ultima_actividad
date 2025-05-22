@@ -10,13 +10,18 @@ def build_gradio_ui(poll_service, nft_service=None, user_service=None):
             return "Registro exitoso. Ahora puedes iniciar sesión."
         except ValueError as e:
             return f"Error: {e}"
+        except Exception as e:
+            return "No se pudo registrar el usuario. El sistema está ocupado o hay un problema de conexión. Intenta más tarde."
 
     def login(username, password):
-        token = user_service.login(username, password)
-        if token:
-            return f"Login exitoso. Bienvenido, {username}.", username
-        else:
-            return "Credenciales incorrectas.", None
+        try:
+            token = user_service.login(username, password)
+            if token:
+                return f"Login exitoso. Bienvenido, {username}.", username
+            else:
+                return "Credenciales incorrectas.", None
+        except Exception as e:
+            return f"Error inesperado en el login. Intenta más tarde. Detalle: {e}", None
 
     def chatbot_response_fn(message, username="anon"):
         return chatbot_service.chatbot_response(message, username)

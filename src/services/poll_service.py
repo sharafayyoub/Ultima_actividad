@@ -30,6 +30,8 @@ class PollService:
                 raise ValueError("Opciones inválidas")
             poll.votos[username] = opcion
         self.nft_service.mint_token(username, poll_id, opcion)
+        # Persistir cambios en la encuesta
+        self.poll_repo.update_poll(poll)
         return True
 
     def close_poll(self, poll_id):
@@ -37,6 +39,8 @@ class PollService:
         if poll and poll.estado == "activa":
             poll.estado = "cerrada"
             poll.resultado = self.get_final_results(poll_id)
+            # Persistir cambios en la encuesta
+            self.poll_repo.update_poll(poll)
             # Notificar observadores aquí si es necesario
 
     def _auto_close_expired_polls(self):
